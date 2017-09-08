@@ -19,13 +19,12 @@ import com.plivo.smsgateway.services.InboundService;
  *
  */
 @RestController
-@RequestMapping(value="/inbound")
-public class InboundController {
+public class SMSController extends BaseController {
 
 	@Autowired
 	private InboundService inboundService;
 	
-	@RequestMapping(value="/sms",method = RequestMethod.POST)
+	@RequestMapping(path="/inbound/sms",method = RequestMethod.POST)
 	public ResponseEntity<Response> inbound(Message message){
 		
 		return new ResponseEntity<Response>(inboundService.inbound(message),HttpStatus.OK);
