@@ -5,21 +5,11 @@
     <artifactId>sms_gateway</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <artifactId>server</artifactId>
-  <packaging>war</packaging>
-  <build>
-		<finalName>sms-gateway</finalName>
-		<plugins>
-			<plugin>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-maven-plugin</artifactId>
-			</plugin>
-		</plugins>
-	</build>
+  <artifactId>services</artifactId>
   <dependencies>
   	<dependency>
   		<groupId>com.plivo.sms_gateway</groupId>
-  		<artifactId>services</artifactId>
+  		<artifactId>data</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
   </dependencies>

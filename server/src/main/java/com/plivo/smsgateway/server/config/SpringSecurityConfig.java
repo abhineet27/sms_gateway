@@ -3,6 +3,8 @@
  */
 package com.plivo.smsgateway.server.config;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -10,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.web.AuthenticationEntryPoint;
+
+import com.plivo.smsgateway.repo.AccountRepository;
 
 /**
  * @author abhineet
@@ -19,8 +23,12 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
+	private static final Logger LOG = LoggerFactory.getLogger(SpringSecurityConfig.class);
+	
 	@Autowired
 	private AuthenticationEntryPoint authEntryPoint;
+	@Autowired
+	private AccountRepository accountRepo;
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
@@ -32,6 +40,12 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication().withUser("john").password("password").roles("");
+		accountRepo.findAll().forEach(a->{try {
+			auth.inMemoryAuthentication().withUser(a.getUsername()).password(a.getAuthId()).roles("");
+		} catch (Exception e) {
+			LOG.error("Error configuring basic auth!",e);
+			e.printStackTrace();
+		}});
+		
 	}
 }
