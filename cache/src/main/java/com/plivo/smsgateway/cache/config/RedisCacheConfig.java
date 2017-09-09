@@ -3,6 +3,7 @@
  */
 package com.plivo.smsgateway.cache.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
@@ -16,13 +17,18 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  */
 @Configuration
 public class RedisCacheConfig {
-
+	@Value("${redis.host}")
+	private String redisHost;
+	
+	@Value("${redis.port}")
+	private Integer redisPort;
+	
 	@SuppressWarnings("deprecation")
 	@Bean
 	JedisConnectionFactory jedisConnectionFactory() {
 		JedisConnectionFactory jedisConFactory = new JedisConnectionFactory();
-	    jedisConFactory.setHostName("localhost");
-	    jedisConFactory.setPort(6379);
+	    jedisConFactory.setHostName(redisHost);
+	    jedisConFactory.setPort(redisPort);
 	    return jedisConFactory;
 	}
 	 

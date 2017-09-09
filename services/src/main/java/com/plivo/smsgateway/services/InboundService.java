@@ -3,9 +3,12 @@
  */
 package com.plivo.smsgateway.services;
 
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.plivo.smsgateway.cache.service.RedisService;
@@ -24,8 +27,12 @@ public class InboundService {
 	
 	@Autowired
 	private MessageValidator messageValidator;
+	
 	@Autowired
 	private RedisService redisService;
+	
+	@Value("#{'${stop.word.list}'.split(',')}")
+	private List<String> stopWordList;
 	
 	public Response inbound(Message message) {
 		Response response = null;
@@ -34,14 +41,19 @@ public class InboundService {
 			if(null != response){
 				return response;
 			}
-			String from = message.getFrom();
-			String to = message.getTo();
-			String text = message.getText();
+			String from = message.getFrom().trim();
+			String to = message.getTo().trim();
+			String text = message.getText().trim();
 			String key = from+to;
 			//stop logic
-			if(text.contains("STOP") || text.contains("STOP\n") || text.contains("STOP\r") || text.contains("STOP\r\n")){
+			boolean containsStop = stopWordList.stream().anyMatch(w->text.contains(w));
+			if(containsStop){
 				redisService.setValue(key, "STOP");
 			}
+			/*if(text.contains("STOP") || text.contains("STOP\n") || text.contains("STOP\r") || text.contains("STOP\r\n")){
+				redisService.setValue(key, "STOP");
+			}*/
+			
 			//increment counter
 			/*if(null == redisService.getCacheValue(from) || redisService.getCacheValue(from) < 50){
 				redisService.incrementValue(from);

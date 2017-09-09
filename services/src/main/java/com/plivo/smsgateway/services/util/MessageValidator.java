@@ -4,6 +4,7 @@
 package com.plivo.smsgateway.services.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import com.plivo.smsgateway.domain.Message;
@@ -18,6 +19,24 @@ import com.plivo.smsgateway.repo.PhoneNumberRepo;
 @Service
 public class MessageValidator {
 
+	@Value("${message.from.min.length}")
+	private Integer fromMinLength;
+	
+	@Value("${message.from.max.length}")
+	private Integer fromMaxLength;
+	
+	@Value("${message.to.min.length}")
+	private Integer toMinLength;
+	
+	@Value("${message.to.max.length}")
+	private Integer toMaxLength;
+	
+	@Value("${message.text.min.length}")
+	private Integer textMinLength;
+	
+	@Value("${message.text.max.length}")
+	private Integer textMaxLength;
+	
 	@Autowired
 	private PhoneNumberRepo phoneNumberRepo;
 	
@@ -27,7 +46,7 @@ public class MessageValidator {
 			response = new Response("", "from is missing");
 			return response;
 		}
-		if(message.getFrom().length() < 6 || message.getFrom().length() > 16){
+		if(message.getFrom().trim().length() < fromMinLength || message.getFrom().trim().length() > fromMaxLength){
 			response = new Response("", "from is invalid");
 			return response;
 		}
@@ -35,7 +54,7 @@ public class MessageValidator {
 			response = new Response("", "to is missing");
 			return response;
 		}
-		if(message.getTo().length() < 6 || message.getTo().length() > 16){
+		if(message.getTo().trim().length() < toMinLength || message.getTo().trim().length() > toMaxLength){
 			response = new Response("", "to is invalid");
 			return response;
 		}
@@ -43,18 +62,18 @@ public class MessageValidator {
 			response = new Response("", "text is missing");
 			return response;
 		}
-		if(message.getText().length() < 1 || message.getText().length() > 120){
+		if(message.getText().trim().length() < textMinLength || message.getText().trim().length() > textMaxLength){
 			response = new Response("", "text is invalid");
 			return response;
 		}
 		if(isInbound){
-			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo());
+			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo().trim());
 			if(null == phoneNumber){
 				response = new Response("", "to parameter not found");
 				return response;
 			}
 		}else{
-			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getFrom());
+			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getFrom().trim());
 			if(null == phoneNumber){
 				response = new Response("", "from parameter not found");
 				return response;
