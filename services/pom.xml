@@ -12,5 +12,10 @@
   		<artifactId>data</artifactId>
   		<version>0.0.1-SNAPSHOT</version>
   	</dependency>
+  	<dependency>
+  		<groupId>com.plivo.sms_gateway</groupId>
+  		<artifactId>cache</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  	</dependency>
   </dependencies>
 </project>

@@ -23,7 +23,7 @@ import com.plivo.smsgateway.repo.AccountRepository;
 @EnableWebSecurity
 public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
-	private static final Logger LOG = LoggerFactory.getLogger(SpringSecurityConfig.class);
+	private static final Logger logger = LoggerFactory.getLogger(SpringSecurityConfig.class);
 	
 	@Autowired
 	private AuthenticationEntryPoint authEntryPoint;
@@ -43,7 +43,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 		accountRepo.findAll().forEach(a->{try {
 			auth.inMemoryAuthentication().withUser(a.getUsername()).password(a.getAuthId()).roles("");
 		} catch (Exception e) {
-			LOG.error("Error configuring basic auth!",e);
+			logger.error("Error configuring basic auth!",e);
 			e.printStackTrace();
 		}});
 		

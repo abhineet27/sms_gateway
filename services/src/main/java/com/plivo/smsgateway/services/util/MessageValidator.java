@@ -21,8 +21,16 @@ public class MessageValidator {
 	@Autowired
 	private PhoneNumberRepo phoneNumberRepo;
 	
-	public Response validateInboundMessage(Message message){
+	public Response validateInboundMessage(Message message, boolean isInbound){
 		Response response = null;
+		if(message.getFrom() == null){
+			response = new Response("", "from is missing");
+			return response;
+		}
+		if(message.getFrom().length() < 6 || message.getFrom().length() > 16){
+			response = new Response("", "from is invalid");
+			return response;
+		}
 		if(message.getTo() == null){
 			response = new Response("", "to is missing");
 			return response;
@@ -31,11 +39,28 @@ public class MessageValidator {
 			response = new Response("", "to is invalid");
 			return response;
 		}
-		PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo());
-		if(null == phoneNumber){
-			response = new Response("", "to parameter not found");
+		if(message.getText() == null){
+			response = new Response("", "text is missing");
 			return response;
 		}
+		if(message.getText().length() < 1 || message.getText().length() > 120){
+			response = new Response("", "text is invalid");
+			return response;
+		}
+		if(isInbound){
+			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo());
+			if(null == phoneNumber){
+				response = new Response("", "to parameter not found");
+				return response;
+			}
+		}else{
+			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getFrom());
+			if(null == phoneNumber){
+				response = new Response("", "from parameter not found");
+				return response;
+			}
+		}
+		
 		return response;
 	}
 }

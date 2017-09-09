@@ -18,41 +18,41 @@ import com.plivo.smsgateway.services.util.MessageValidator;
  *
  */
 @Service
-public class InboundService {
+public class OutboundService {
 
-	private static final Logger logger = LoggerFactory.getLogger(InboundService.class);
+	private static final Logger logger = LoggerFactory.getLogger(OutboundService.class);
 	
 	@Autowired
 	private MessageValidator messageValidator;
 	@Autowired
 	private RedisService redisService;
 	
-	public Response inbound(Message message) {
+	public Response outbound(Message message) {
 		Response response = null;
 		try{
-			response = messageValidator.validateInboundMessage(message,true);
+			response = messageValidator.validateInboundMessage(message,false);
 			if(null != response){
 				return response;
 			}
 			String from = message.getFrom();
 			String to = message.getTo();
-			String text = message.getText();
-			String key = from+to;
-			//stop logic
-			if(text.contains("STOP") || text.contains("STOP\n") || text.contains("STOP\r") || text.contains("STOP\r\n")){
-				redisService.setValue(key, "STOP");
+			//stop check
+			String key = to+from;
+			if(null != redisService.getValue(key)){
+				response = new Response("","sms from "+from+" to "+to+" blocked by STOP request");
+				return response;
 			}
 			//increment counter
-			/*if(null == redisService.getCacheValue(from) || redisService.getCacheValue(from) < 50){
+			if(null == redisService.getCacheValue(from) || redisService.getCacheValue(from) < 50){
 				redisService.incrementValue(from);
 			}else{
 				response = new Response("","limit reached for from "+from);
 				return response;
-			}*/
-			response = new Response("inbound sms ok","");
+			}
+			response = new Response("outbound sms ok","");
 			return response;
 		}catch(Exception e){
-			logger.error("Exception processing inbound sms",e);
+			logger.error("Exception processing outbound sms",e);
 			response = new Response("","unknown failure");
 			return response;
 		}
