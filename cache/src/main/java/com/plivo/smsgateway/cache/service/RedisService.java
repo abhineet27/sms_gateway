@@ -8,6 +8,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,12 @@ import org.springframework.stereotype.Service;
 public class RedisService {
 
 	private Lock lock = new ReentrantLock();
+	
+	@Value("${stop.expiry.time}")
+	private Integer stopExpiryTime;
+	
+	@Value("${rate.limit.expiry.time}")
+	private Integer rateLimitExpiryTime;
 	
     @Autowired
     private RedisTemplate< String, Object > template;
@@ -34,18 +41,21 @@ public class RedisService {
         template.opsForValue().set(key, value);
 
         // set a expire for a message
-        template.expire(key, 1, TimeUnit.MINUTES);
+        template.expire(key, stopExpiryTime, TimeUnit.HOURS);
     }
 
     public Integer getCacheValue(final String key){
-    	return redisCacheTemplate.opsForValue().get(key);
+    	lock.lock();
+    	Integer val = redisCacheTemplate.opsForValue().get(key);
+    	lock.unlock();
+    	return val;
     }
     
     public void incrementValue(final String key){
     	lock.lock();
     	if(null == redisCacheTemplate.boundValueOps(key).get()){
     		redisCacheTemplate.opsForValue().set(key, 1);
-    		redisCacheTemplate.expire(key, 1, TimeUnit.MINUTES);
+    		redisCacheTemplate.expire(key, rateLimitExpiryTime, TimeUnit.HOURS);
     	}else{
     		redisCacheTemplate.opsForValue().increment(key, 1);
     	}
