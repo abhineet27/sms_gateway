@@ -4,7 +4,16 @@ SMS gateway is a microservice that serves as a platform for message routing, sto
 belonging to a account and has a basic authorization enabled.
 
 ## Getting Started
-SMS gateway is a multi module maven project.
+SMS gateway is a multi module maven project. 
+Following are the sub modules in top down manner:
+
+* **cache** - This module is responsible for redis cache configuration, this layer does not have dependency on other module
+* **domain** - This module just contains the entities or POJOs, this layer does not have dependency on other module
+* **data** - This module is a DAO/repo layere dependening on the domain layer
+* **services** - This module exposes services which could be plugged in descendent modules and could be used. This is
+                 the layer where business logic resides. This layer is dependent on the data module.
+* **server** - This is the bottom most web module responsible for the deployable war artifcat dependent on services module.                            Authorization configuration is also part of this module.
+
 Download or clone the project on your local machine. See deployment for notes on how to deploy the project on a live system.
 
 ### Prerequisites
