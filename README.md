@@ -31,6 +31,12 @@ Technology Stack
 ```
 Follow standard instructions to setup these tech stack.
 ```
+### Project Configuration
+
+All project related configuration like mysql host, port or redis config or message min-max length, cache expiry etc. are
+in /server/src/main/resources/application.properties
+
+Please make necessary changes here dependening on the environment detail.
 
 ### Installing
 
@@ -47,6 +53,18 @@ mvn clean install -DskipTests=true
 ## Running the tests
 
 While building the project, test cases will be invoked if not skipped. 
+
+## Run Standalone 
+
+```
+Just run server/src/main/java/com/plivo/smsgateway/server/Application.java as java Application
+```
+**or**
+
+```
+Go to generated war location which would be in target folder under server, sms-gateway.war is the artifact name
+java -jar sms-gateway.war
+```
 
 ## Deployment
 
