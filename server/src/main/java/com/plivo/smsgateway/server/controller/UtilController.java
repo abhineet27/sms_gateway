@@ -32,4 +32,11 @@ public class UtilController extends BaseController {
 	public ResponseEntity<String> getRedisValue(@RequestParam(value="key",required=true) String key){
 		return new ResponseEntity<>(utilService.getRedisValue(key),HttpStatus.OK);
 	}
+    
+    @RequestMapping(path="/util/clear_cache",method = RequestMethod.POST)
+	public ResponseEntity<Void> clearCache(){
+    	utilService.clearCache();
+		return new ResponseEntity<Void>(HttpStatus.OK);
+	}
 }
+;

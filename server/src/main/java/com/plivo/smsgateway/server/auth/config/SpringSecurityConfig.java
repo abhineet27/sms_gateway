@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.plivo.smsgateway.server.config;
+package com.plivo.smsgateway.server.auth.config;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

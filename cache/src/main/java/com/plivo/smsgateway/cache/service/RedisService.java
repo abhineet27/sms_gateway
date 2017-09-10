@@ -9,6 +9,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.redis.connection.jedis.JedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,9 @@ public class RedisService {
 
     @Autowired
     private RedisTemplate< String, Integer > redisCacheTemplate;
+
+    @Autowired
+    private JedisConnectionFactory jedisConnectionFactory;
     
     public Object getValue(final String key) {
         return template.opsForValue().get(key);
@@ -60,5 +64,9 @@ public class RedisService {
     		redisCacheTemplate.opsForValue().increment(key, 1);
     	}
     	lock.unlock();
+    }
+    
+    public void flushAll(){
+    	jedisConnectionFactory.getConnection().flushAll();;
     }
 }

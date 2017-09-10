@@ -18,7 +18,11 @@ public class UtilService {
 	@Autowired
 	private RedisService redisService;
 	
-	public String getRedisValue(String key){
+	public String getRedisValue(final String key){
 		return (String)redisService.getValue(key);
+	}
+	
+	public void clearCache(){
+		redisService.flushAll();
 	}
 }

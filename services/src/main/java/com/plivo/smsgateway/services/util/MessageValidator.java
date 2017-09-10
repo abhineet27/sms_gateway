@@ -7,9 +7,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import com.plivo.smsgateway.domain.Account;
 import com.plivo.smsgateway.domain.Message;
 import com.plivo.smsgateway.domain.PhoneNumber;
 import com.plivo.smsgateway.domain.Response;
+import com.plivo.smsgateway.repo.AccountRepository;
 import com.plivo.smsgateway.repo.PhoneNumberRepo;
 
 /**
@@ -40,7 +42,10 @@ public class MessageValidator {
 	@Autowired
 	private PhoneNumberRepo phoneNumberRepo;
 	
-	public Response validateInboundMessage(Message message, boolean isInbound){
+	@Autowired
+	private AccountRepository accountRepo;
+	
+	public Response validateInboundMessage(final Message message,final String userName, final boolean isInbound){
 		Response response = null;
 		if(message.getFrom() == null){
 			response = new Response("", "from is missing");
@@ -66,15 +71,16 @@ public class MessageValidator {
 			response = new Response("", "text is invalid");
 			return response;
 		}
+		Account account = accountRepo.findByUsername(userName);
 		if(isInbound){
 			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo().trim());
-			if(null == phoneNumber){
+			if(null == phoneNumber || account.getId() != phoneNumber.getAccountId()){
 				response = new Response("", "to parameter not found");
 				return response;
 			}
 		}else{
 			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getFrom().trim());
-			if(null == phoneNumber){
+			if(null == phoneNumber || account.getId() != phoneNumber.getAccountId()){
 				response = new Response("", "from parameter not found");
 				return response;
 			}

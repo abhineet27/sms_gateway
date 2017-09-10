@@ -34,10 +34,10 @@ public class InboundService {
 	@Value("#{'${stop.word.list}'.split(',')}")
 	private List<String> stopWordList;
 	
-	public Response inbound(Message message) {
+	public Response inbound(final Message message, final String userName) {
 		Response response = null;
 		try{
-			response = messageValidator.validateInboundMessage(message,true);
+			response = messageValidator.validateInboundMessage(message, userName, true);
 			if(null != response){
 				return response;
 			}
@@ -50,17 +50,6 @@ public class InboundService {
 			if(containsStop){
 				redisService.setValue(key, "STOP");
 			}
-			/*if(text.contains("STOP") || text.contains("STOP\n") || text.contains("STOP\r") || text.contains("STOP\r\n")){
-				redisService.setValue(key, "STOP");
-			}*/
-			
-			//increment counter
-			/*if(null == redisService.getCacheValue(from) || redisService.getCacheValue(from) < 50){
-				redisService.incrementValue(from);
-			}else{
-				response = new Response("","limit reached for from "+from);
-				return response;
-			}*/
 			response = new Response("inbound sms ok","");
 			return response;
 		}catch(Exception e){

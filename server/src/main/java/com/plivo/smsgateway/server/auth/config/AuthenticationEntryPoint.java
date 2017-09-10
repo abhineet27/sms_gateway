@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.plivo.smsgateway.server.config;
+package com.plivo.smsgateway.server.auth.config;
 
 import java.io.IOException;
 import java.io.PrintWriter;

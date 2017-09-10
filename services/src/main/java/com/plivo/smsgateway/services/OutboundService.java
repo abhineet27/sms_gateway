@@ -27,10 +27,10 @@ public class OutboundService {
 	@Autowired
 	private RedisService redisService;
 	
-	public Response outbound(Message message) {
+	public Response outbound(final Message message, final String userName) {
 		Response response = null;
 		try{
-			response = messageValidator.validateInboundMessage(message,false);
+			response = messageValidator.validateInboundMessage(message,userName,false);
 			if(null != response){
 				return response;
 			}
