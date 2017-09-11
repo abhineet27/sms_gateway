@@ -4,8 +4,8 @@
 package com.plivo.smsgateway.integration.test;
 
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.CoreMatchers.is;
+import static org.hamcrest.MatcherAssert.assertThat;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -57,6 +57,7 @@ public class SMSGatewayTest {
 		HttpEntity<Message> request = new HttpEntity<>(new Message("from","to","text"));
 		ResponseEntity<Response> httpResponse = testRestTemplate.exchange(BASE_URL + "/inbound/sms", HttpMethod.POST, request, Response.class);
 		Response response = httpResponse.getBody();
+		assertThat(httpResponse.getStatusCode(), equalTo(HttpStatus.BAD_REQUEST));
 		assertThat(response.getError(), is("from is invalid"));
 	}
 	
@@ -67,6 +68,7 @@ public class SMSGatewayTest {
 		HttpEntity<Message> request = new HttpEntity<>(new Message("123456","123456","text"));
 		ResponseEntity<Response> httpResponse = testRestTemplate.exchange(BASE_URL + "/inbound/sms", HttpMethod.POST, request, Response.class);
 		Response response = httpResponse.getBody();
+		assertThat(httpResponse.getStatusCode(), equalTo(HttpStatus.BAD_REQUEST));
 		assertThat(response.getError(), is("to parameter not found"));
 	}
 	
@@ -77,6 +79,7 @@ public class SMSGatewayTest {
 		HttpEntity<Message> request = new HttpEntity<>(new Message("123456","123456","text"));
 		ResponseEntity<Response> httpResponse = testRestTemplate.exchange(BASE_URL + "/outbound/sms", HttpMethod.POST, request, Response.class);
 		Response response = httpResponse.getBody();
+		assertThat(httpResponse.getStatusCode(), equalTo(HttpStatus.BAD_REQUEST));
 		assertThat(response.getError(), is("from parameter not found"));
 	}
 	
@@ -87,6 +90,7 @@ public class SMSGatewayTest {
 		HttpEntity<Message> request = new HttpEntity<>(new Message("123456","xxxx","text"));
 		ResponseEntity<Response> httpResponse = testRestTemplate.exchange(BASE_URL + "/outbound/sms", HttpMethod.POST, request, Response.class);
 		Response response = httpResponse.getBody();
+		assertThat(httpResponse.getStatusCode(), equalTo(HttpStatus.BAD_REQUEST));
 		assertThat(response.getError(), is("to is invalid"));
 	}
 	

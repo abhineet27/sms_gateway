@@ -51,7 +51,7 @@ public class MessageValidator {
 			response = new Response("", "from is missing");
 			return response;
 		}
-		if(message.getFrom().trim().length() < fromMinLength || message.getFrom().trim().length() > fromMaxLength){
+		if(message.getFrom().length() < fromMinLength || message.getFrom().length() > fromMaxLength){
 			response = new Response("", "from is invalid");
 			return response;
 		}
@@ -59,7 +59,7 @@ public class MessageValidator {
 			response = new Response("", "to is missing");
 			return response;
 		}
-		if(message.getTo().trim().length() < toMinLength || message.getTo().trim().length() > toMaxLength){
+		if(message.getTo().length() < toMinLength || message.getTo().length() > toMaxLength){
 			response = new Response("", "to is invalid");
 			return response;
 		}
@@ -67,19 +67,19 @@ public class MessageValidator {
 			response = new Response("", "text is missing");
 			return response;
 		}
-		if(message.getText().trim().length() < textMinLength || message.getText().trim().length() > textMaxLength){
+		if(message.getText().length() < textMinLength || message.getText().length() > textMaxLength){
 			response = new Response("", "text is invalid");
 			return response;
 		}
 		Account account = accountRepo.findByUsername(userName);
 		if(isInbound){
-			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo().trim());
+			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getTo());
 			if(null == phoneNumber || account.getId() != phoneNumber.getAccountId()){
 				response = new Response("", "to parameter not found");
 				return response;
 			}
 		}else{
-			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getFrom().trim());
+			PhoneNumber phoneNumber = phoneNumberRepo.findByNumber(message.getFrom());
 			if(null == phoneNumber || account.getId() != phoneNumber.getAccountId()){
 				response = new Response("", "from parameter not found");
 				return response;

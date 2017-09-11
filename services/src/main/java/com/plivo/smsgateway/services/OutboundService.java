@@ -34,8 +34,8 @@ public class OutboundService {
 			if(null != response){
 				return response;
 			}
-			String from = message.getFrom().trim();
-			String to = message.getTo().trim();
+			String from = message.getFrom();
+			String to = message.getTo();
 			//stop check
 			String key = to+from;
 			if(null != redisService.getValue(key)){

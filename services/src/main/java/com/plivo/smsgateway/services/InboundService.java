@@ -41,9 +41,9 @@ public class InboundService {
 			if(null != response){
 				return response;
 			}
-			String from = message.getFrom().trim();
-			String to = message.getTo().trim();
-			String text = message.getText().trim();
+			String from = message.getFrom();
+			String to = message.getTo();
+			String text = message.getText();
 			String key = from+to;
 			//stop logic
 			boolean containsStop = stopWordList.stream().anyMatch(w->text.contains(w));
