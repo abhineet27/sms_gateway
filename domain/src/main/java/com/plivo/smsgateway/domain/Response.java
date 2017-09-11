@@ -12,6 +12,11 @@ public class Response {
 	private String message;
 	private String error;
 	
+	
+	public Response() {
+		super();
+	}
+	
 	public Response(String message, String error) {
 		super();
 		this.message = message;
